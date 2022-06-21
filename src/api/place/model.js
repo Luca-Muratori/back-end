@@ -11,3 +11,5 @@ const PlaceSchema = new Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "ToDo" }],
   },
 });
+
+export default PlaceSchema;

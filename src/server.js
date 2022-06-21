@@ -9,6 +9,7 @@ import {
   forbiddenHandler,
 } from "./errorsHandler.js";
 import userRouter from "./api/user/index.js";
+import placeRouter from "./api/place/index.js";
 
 const server = express();
 const port = process.env.PORT || 3001;
@@ -18,6 +19,7 @@ server.use(express.json());
 
 ///--------------------endpoints
 server.use("/user", userRouter);
+server.use("/place", placeRouter);
 
 ///----------------------errors handlers --------------------------------
 server.use(unauthorizedHandler);
