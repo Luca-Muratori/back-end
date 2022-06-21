@@ -10,8 +10,20 @@ cloudinary.config({
   api_secret: CLOUDINARY_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-});
+export const cloudinaryAvatarUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: "profile_avatars",
+    },
+  }),
+}).single("avatar");
 
-export const parseFile = multer({ storage });
+export const cloudinaryPhotoUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: "photos",
+    },
+  }),
+}).single("photo");

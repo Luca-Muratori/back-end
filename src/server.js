@@ -7,7 +7,8 @@ import {
   unauthorizedHandler,
   genericHandler,
   forbiddenHandler,
-} from "./errorsHandler";
+} from "./errorsHandler.js";
+import userRouter from "./api/user/index.js";
 
 const server = express();
 const port = process.env.PORT || 3001;
@@ -16,6 +17,7 @@ server.use(cors());
 server.use(express.json());
 
 ///--------------------endpoints
+server.use("/user", userRouter);
 
 ///----------------------errors handlers --------------------------------
 server.use(unauthorizedHandler);
