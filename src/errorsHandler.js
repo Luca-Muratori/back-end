@@ -1,16 +1,16 @@
-export const unauthorizedHandler = (req, res, next) => {
+export const unauthorizedHandler = (err, req, res, next) => {
   if (err.status === 401) {
     res.status(401).send({ message: err.message });
   }
 };
 
-export const forbiddenHandler = (req, res, next) => {
+export const forbiddenHandler = (err, req, res, next) => {
   if (err.status === 403) {
     res.status(403).send({ message: err.message });
   }
 };
 
-export const genericHandler = (req, res, next) => {
+export const genericHandler = (err, req, res, next) => {
   if (err.status === 500) {
     res.status(403).send({ message: err.message });
   }

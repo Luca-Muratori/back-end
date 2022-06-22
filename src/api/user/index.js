@@ -7,8 +7,41 @@ import {
 } from "../../tools/uploadToCloudinary.js";
 import UserSchema from "./model.js";
 import ToDoSchema from "../toDo/model.js";
+import PhotoSchema from "../photo/model.js";
+import { adminOnlyMiddleware } from "../../auth/admin.js";
+import { JWTAuthMiddleware } from "../../auth/token.js";
+import {
+  authenticateUser,
+  verifyRefreshTokenAndGenerateNewTokens,
+} from "../../auth/tools.js";
+import passport from "passport";
 
 const userRouter = express.Router();
+
+//for google authorization
+userRouter.get(
+  "/googleLogin",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+); // the purpose of this endpoint is to redirect users to Google Consent Screen
+userRouter.get(
+  "/googleRedirect",
+  passport.authenticate("google", { session: false }),
+  (req, res, next) => {
+    // the purpose of this endpoint is to receive a response from Google, execute the google callback function and then send a response back
+    try {
+      const { accessToken, refreshToken } = req.user;
+
+      // as an alternative to url parameters we could use cookies
+      // res.redirect(`${process.env.FE_URL}/users?accessToken=${accessToken}&refreshToken=${refreshToken}`)
+
+      res.cookie("accessToken", accessToken, { httpOnly: true });
+      res.cookie("refreshToken", refreshToken, { httpOnly: true });
+      res.redirect(`${process.env.FE_URL}/home`);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 //create the user
 userRouter.post("/", async (req, res, next) => {
@@ -46,15 +79,20 @@ userRouter.put(
 );
 
 //for getting all the user
-userRouter.get("/", async (req, res, next) => {
-  try {
-    const profile = await UserSchema.find();
-    res.status(200).send(profile);
-  } catch (error) {
-    console.log(error);
-    next(error);
+userRouter.get(
+  "/",
+  JWTAuthMiddleware,
+  adminOnlyMiddleware,
+  async (req, res, next) => {
+    try {
+      const profile = await UserSchema.find();
+      res.status(200).send(profile);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
   }
-});
+);
 
 //for getting only one user by _id
 userRouter.get("/:userId", async (req, res, next) => {
@@ -111,20 +149,42 @@ userRouter.delete("/:userId", async (req, res, next) => {
   }
 });
 
+userRouter.post("/login", async (req, res, next) => {
+  try {
+    // 1. Obtain credentials from req.body
+    const { email, password } = req.body;
+
+    // 2. Verify credentials
+    const user = await UserSchema.checkCredentials(email, password);
+
+    if (user) {
+      // 3. If credentials are ok --> generate an access token (JWT) and send it as a response
+
+      const { accessToken, refreshToken } = await authenticateUser(user);
+      res.send({ accessToken, refreshToken });
+    } else {
+      // 4. If credentials are not ok --> throw an error (401)
+      next(createError(401, "Credentials are not ok!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 //-------------------user/ToDo
 //create a to do
 userRouter.post("/:userId/toDos", async (req, res, next) => {
   try {
     const user = await UserSchema.find({ _id: req.params.userId });
     if (user) {
-      const photoToInsert = await ToDoSchema({
+      const toDoToInsert = await ToDoSchema({
         ...req.body,
         userId: req.params.userId,
       }).save();
 
-      const modifiedUser = await ToDoSchema.findOneAndUpdate(
+      const modifiedUser = await UserSchema.findOneAndUpdate(
         { _id: req.params.userId },
-        { $push: { photos: photoToInsert } },
+        { $push: { userToDoList: toDoToInsert } },
         { new: true, runValidators: true }
       );
       if (modifiedUser) {
