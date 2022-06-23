@@ -11,6 +11,7 @@ import {
 } from "./errorsHandler.js";
 import userRouter from "./api/user/index.js";
 import placeRouter from "./api/place/index.js";
+import "./api/comment/model.js";
 
 passport.use("google", googleStrategy);
 
@@ -21,15 +22,6 @@ server.use(cors());
 server.use(express.json());
 server.use(passport.initialize());
 
-///--------------------endpoints
-server.use("/user", userRouter);
-server.use("/place", placeRouter);
-
-///----------------------errors handlers --------------------------------
-server.use(unauthorizedHandler);
-server.use(genericHandler);
-server.use(forbiddenHandler);
-
 mongoose.connect(process.env.MONGO_CONNECTION);
 
 mongoose.connection.on("connected", () => {
@@ -39,3 +31,12 @@ mongoose.connection.on("connected", () => {
     console.table(listEndpoints(server));
   });
 });
+
+///--------------------endpoints
+server.use("/user", userRouter);
+server.use("/place", placeRouter);
+
+///----------------------errors handlers --------------------------------
+server.use(unauthorizedHandler);
+server.use(genericHandler);
+server.use(forbiddenHandler);

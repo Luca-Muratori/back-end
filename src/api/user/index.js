@@ -62,8 +62,8 @@ userRouter.put(
   async (req, res, next) => {
     try {
       const profile = await UserSchema.findByIdAndUpdate(
-        req.params.profileId,
-        { image: req.file.path },
+        req.params.userId,
+        { avatar: req.file.path },
         { new: true }
       );
       if (profile) {
@@ -94,6 +94,33 @@ userRouter.get(
   }
 );
 
+//for gettin only the user that had login
+userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const user = await UserSchema.findById(req.user._id);
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+//for modify only the user that had login
+userRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const modifiedUser = await UserSchema.findByIdAndUpdate(
+      req.user._id,
+      req.body
+    );
+  } catch (error) {
+    next(error);
+  }
+});
+
+//to delete the user that had login
+userRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
+  await UserSchema.findByIdAndDelete(req.user._id);
+});
+
 //for getting only one user by _id
 userRouter.get("/:userId", async (req, res, next) => {
   try {
@@ -116,38 +143,48 @@ userRouter.get("/:userId", async (req, res, next) => {
 });
 
 //for modifying the user's information
-userRouter.put("/:userId", async (req, res, next) => {
-  try {
-    const profile = await UserSchema.findByIdAndUpdate(
-      req.params.userId,
-      req.body,
-      { new: true }
-    );
-    if (profile) {
-      res.status(200).send(profile);
-    } else {
-      console.log("This profile does not exist");
+userRouter.put(
+  "/:userId",
+  JWTAuthMiddleware,
+  adminOnlyMiddleware,
+  async (req, res, next) => {
+    try {
+      const profile = await UserSchema.findByIdAndUpdate(
+        req.params.userId,
+        req.body,
+        { new: true }
+      );
+      if (profile) {
+        res.status(200).send(profile);
+      } else {
+        console.log("This profile does not exist");
+      }
+    } catch (error) {
+      console.log(error);
+      next(error);
     }
-  } catch (error) {
-    console.log(error);
-    next(error);
   }
-});
+);
 
 //for deleting the user from the db
-userRouter.delete("/:userId", async (req, res, next) => {
-  try {
-    const profile = await UserSchema.findByIdAndDelete(req.params.profileId);
-    if (profile) {
-      res.status(200).send("Profile Destroyed");
-    } else {
-      console.log("This profile does not exist");
+userRouter.delete(
+  "/:userId",
+  JWTAuthMiddleware,
+  adminOnlyMiddleware,
+  async (req, res, next) => {
+    try {
+      const profile = await UserSchema.findByIdAndDelete(req.params.profileId);
+      if (profile) {
+        res.status(200).send("Profile Destroyed");
+      } else {
+        console.log("This profile does not exist");
+      }
+    } catch (error) {
+      console.log(error);
+      next(error);
     }
-  } catch (error) {
-    console.log(error);
-    next(error);
   }
-});
+);
 
 userRouter.post("/login", async (req, res, next) => {
   try {
@@ -166,6 +203,23 @@ userRouter.post("/login", async (req, res, next) => {
       // 4. If credentials are not ok --> throw an error (401)
       next(createError(401, "Credentials are not ok!"));
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.post("/refreshTokens", async (req, res, next) => {
+  try {
+    // 1. Receive the refresh token in req.body
+    const { currentRefreshToken } = req.body;
+
+    // 2. Check validity of that token (check if it is not expired, check if it is not compromised, check if it is same as the one we store in db)
+    const { accessToken, refreshToken } =
+      await verifyRefreshTokenAndGenerateNewTokens(currentRefreshToken);
+    // 3. If everything is fine --> generate a new pair of tokens (accessToken2 & refreshToken2)
+
+    // 4. Send them back as a response
+    res.send({ accessToken, refreshToken });
   } catch (error) {
     next(error);
   }
@@ -220,9 +274,9 @@ userRouter.get("/:userId/toDos/:toDoId", async (req, res, next) => {
       "userToDoList"
     );
     if (user) {
-      const toDo = await user.userToDoList
-        .find((toDo) => req.params.toDoId === toDo._id.toString())
-        .populate("user");
+      const toDo = await user.userToDoList.find(
+        (toDo) => req.params.toDoId === toDo._id.toString()
+      );
       console.log(user.toDo);
       if (toDo) {
         res.send(toDo);

@@ -12,4 +12,4 @@ const PlaceSchema = new Schema({
   },
 });
 
-export default PlaceSchema;
+export default mongoose.model("Place", PlaceSchema);
