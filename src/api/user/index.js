@@ -81,12 +81,12 @@ userRouter.put(
 //for getting all the user
 userRouter.get(
   "/",
-  JWTAuthMiddleware,
-  adminOnlyMiddleware,
+
   async (req, res, next) => {
     try {
-      const profile = await UserSchema.find();
-      res.status(200).send(profile);
+      const users = await UserSchema.find().populate("photos");
+      users.map((user) => console.log(user.photos));
+      res.status(200).send(users);
     } catch (error) {
       console.log(error);
       next(error);
@@ -335,6 +335,7 @@ userRouter.post(
       if (user) {
         const photoToInsert = await PhotoSchema({
           ...req.body,
+          cloudinaryLink: req.file.path,
           userId: req.params.userId,
         }).save();
 
@@ -344,6 +345,7 @@ userRouter.post(
           { new: true, runValidators: true }
         );
         if (modifiedUser) {
+          console.log(res);
           res.send(modifiedUser);
         }
       }
@@ -379,7 +381,7 @@ userRouter.get("/:userId/photos/:photoId", async (req, res, next) => {
     if (user) {
       const photo = await user.photos
         .find((photo) => req.params.photoId === photo._id.toString())
-        .populate("user");
+        .populate("userId");
       console.log(user.photo);
       if (photo) {
         res.send(photo);
