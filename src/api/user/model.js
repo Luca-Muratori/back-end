@@ -3,67 +3,70 @@ import bcrypt from "bcrypt";
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema({
-  email: { type: String, required: true },
-  name: { type: String },
-  surname: { type: String },
-  avatar: {
-    type: String,
-    default: "https://ui-avatars.com/api/?name=Unnamed+User",
+const UserSchema = new Schema(
+  {
+    email: { type: String, required: true },
+    name: { type: String },
+    surname: { type: String },
+    avatar: {
+      type: String,
+      default: "https://ui-avatars.com/api/?name=Unnamed+User",
+    },
+    role: { type: String, enum: ["User", "Admin"], default: "User" },
+    password: { type: String, required: false },
+    refreshToken: { type: String },
+    whereUserLive: { type: String },
+    photos: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Photo",
+        },
+      ],
+    },
+    userToDoList: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "ToDo",
+        },
+      ],
+    },
+    favoritePhotos: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Photo",
+        },
+      ],
+    },
+    friends: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+    },
+    favoritePlace: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Place",
+        },
+      ],
+    },
+    comments: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Comment",
+        },
+      ],
+    },
   },
-  role: { type: String, enum: ["User", "Admin"], default: "User" },
-  password: { type: String, required: false },
-  refreshToken: { type: String },
-  whereUserLive: { type: String },
-  photos: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Photo",
-      },
-    ],
-  },
-  userToDoList: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ToDo",
-      },
-    ],
-  },
-  favoritePhotos: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Photo",
-      },
-    ],
-  },
-  friends: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-  },
-  favoritePlace: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Place",
-      },
-    ],
-  },
-  comments: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
-  },
-});
+  { timestamp: { type: Date } }
+);
 
 UserSchema.pre("save", async function (next) {
   // BEFORE saving the user in db, execute a function (hash the password)
