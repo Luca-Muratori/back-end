@@ -77,20 +77,16 @@ userRouter.put(
 );
 
 //for getting all the user
-userRouter.get(
-  "/",
-
-  async (req, res, next) => {
-    try {
-      const users = await UserSchema.find().populate("photos");
-      users.map((user) => console.log(user.photos));
-      res.status(200).send(users);
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
+userRouter.get("/", async (req, res, next) => {
+  try {
+    const users = await UserSchema.find().populate("photos");
+    users.map((user) => console.log(user.photos));
+    res.status(200).send(users);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
-);
+});
 
 //for gettin only the user that had login
 userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
@@ -192,7 +188,7 @@ userRouter.post("/login", async (req, res, next) => {
 
     // 2. Verify credentials
     const user = await UserSchema.checkCredentials(email, password);
-
+    console.log(user);
     if (user) {
       // 3. If credentials are ok --> generate an access token (JWT) and send it as a response
 
