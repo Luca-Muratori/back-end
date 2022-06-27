@@ -107,7 +107,7 @@ UserSchema.static("checkCredentials", async function (email, plainPW) {
     }
   } else {
     // 4. In case of either email not found or password not correct --> return null
-    return null;
+    return "null";
   }
 });
 
