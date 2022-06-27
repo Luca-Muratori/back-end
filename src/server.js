@@ -22,6 +22,7 @@ let whitelist = [
   "http://localhost:3000",
   "https://solo-capstone.herokuapp.com/user/login",
   "https://solo-capstone.herokuapp.com/user/googleLogin",
+  "https://solo-capstone.herokuapp.com/user/googleRedirect",
 ];
 
 var corsOptions = {
