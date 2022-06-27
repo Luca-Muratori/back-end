@@ -34,7 +34,7 @@ console.log(whitelist);
 
 var corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin);
+    console.log("origin", origin);
     if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
