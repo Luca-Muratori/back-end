@@ -41,12 +41,35 @@ userRouter.get(
   }
 );
 
+userRouter.post("/login", async (req, res, next) => {
+  try {
+    // 1. Obtain credentials from req.body
+    console.log("hello");
+    const { email, password } = req.body;
+    console.log("req.body", email, password);
+
+    // 2. Verify credentials
+    const user = await UserSchema.checkCredentials(email, password);
+    if (user) {
+      // 3. If credentials are ok --> generate an access token (JWT) and send it as a response
+      const { accessToken, refreshToken } = await authenticateUser(user);
+      console.log("user", user);
+      res.send({ accessToken, refreshToken });
+    } else {
+      // 4. If credentials are not ok --> throw an error (401)
+      next(createError(401, "Credentials are not ok!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 //create the user
 userRouter.post("/", async (req, res, next) => {
   try {
     const profile = new UserSchema(req.body);
     const { _id } = await profile.save();
-    res.status(201).send(_id);
+    res.status(201).send({ _id });
   } catch (error) {
     console.log(error);
     next(error);
@@ -179,29 +202,6 @@ userRouter.delete(
     }
   }
 );
-
-userRouter.post("/login", async (req, res, next) => {
-  try {
-    // 1. Obtain credentials from req.body
-    const { email, password } = req.body;
-    console.log(req.body);
-
-    // 2. Verify credentials
-    const user = await UserSchema.checkCredentials(email, password);
-    console.log(user);
-    if (user) {
-      // 3. If credentials are ok --> generate an access token (JWT) and send it as a response
-
-      const { accessToken, refreshToken } = await authenticateUser(user);
-      res.send({ accessToken, refreshToken });
-    } else {
-      // 4. If credentials are not ok --> throw an error (401)
-      next(createError(401, "Credentials are not ok!"));
-    }
-  } catch (error) {
-    next(error);
-  }
-});
 
 userRouter.post("/refreshTokens", async (req, res, next) => {
   try {

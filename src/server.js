@@ -18,11 +18,11 @@ passport.use("google", googleStrategy);
 const server = express();
 const port = process.env.PORT || 3001;
 
-server.all("/", function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
+// server.all("/", function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+// });
 let whitelist = [
   "http://localhost:3000",
   // "https://solo-capstone.herokuapp.com/user/login",
@@ -32,20 +32,21 @@ let whitelist = [
 ];
 console.log(whitelist);
 
-var corsOptions = {
-  origin: function (origin, callback) {
-    console.log("origin", origin);
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      console.log(whitelist.indexOf(origin));
-      callback(null, true);
-    } else {
-      console.log(origin);
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     console.log("origin", origin);
+//     if (!origin || whitelist.indexOf(origin) !== -1) {
+//       console.log(whitelist.indexOf(origin));
+//       console.log(origin);
+//       callback(null, true);
+//     } else {
+//       console.log(origin);
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+// };
 
-server.use(cors(corsOptions));
+// server.use(cors(corsOptions));
 server.use(express.json());
 server.use(passport.initialize());
 

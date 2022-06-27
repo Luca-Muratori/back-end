@@ -4,22 +4,21 @@ import UserSchema from "../api/user/model.js";
 
 export const authenticateUser = async (user) => {
   // 1. Given the user, it generates two tokens (accessToken & refreshToken)
+  console.log(user._id.toString(), user.role);
   const accessToken = await generateAccessToken({
-    _id: user._id,
+    _id: user._id.toString(),
     role: user.role,
   });
   const refreshToken = await generateRefreshToken({
-    _id: user._id,
+    _id: user._id.toString(),
     role: user.role,
   });
-
+  console.log("access and refresh tokens", accessToken);
   // 2. Refresh Token should be stored in db
-
   user.refreshToken = refreshToken;
   await user.save(); //remember that user is a MONGOOSE DOCUMENT, therefore it has some special posers like .save() method
 
   // 3. Returns both the tokens
-
   return { accessToken, refreshToken };
 };
 
@@ -28,7 +27,7 @@ const generateAccessToken = (payload) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "15 day" },
+      { expiresIn: "1 day" },
       (err, token) => {
         if (err) reject(err);
         else resolve(token);
@@ -49,7 +48,7 @@ const generateRefreshToken = (payload) =>
     jwt.sign(
       payload,
       process.env.REFRESH_SECRET,
-      { expiresIn: "1 month" },
+      { expiresIn: "3 day" },
       (err, token) => {
         if (err) reject(err);
         else resolve(token);
