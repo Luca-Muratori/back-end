@@ -14,6 +14,7 @@ const UserSchema = new Schema(
     },
     role: { type: String, enum: ["User", "Admin"], default: "User" },
     password: { type: String, required: false },
+    accessToken: { type: String },
     refreshToken: { type: String },
     whereUserLive: { type: String },
     photos: {
@@ -88,7 +89,7 @@ UserSchema.methods.toJSON = function () {
   const userObject = userDocument.toObject();
   delete userObject.password;
   delete userObject.__v;
-  delete userObject.refreshToken;
+  // delete userObject.refreshToken;
   return userObject;
 };
 

@@ -193,7 +193,6 @@ userRouter.post("/login", async (req, res, next) => {
       // 3. If credentials are ok --> generate an access token (JWT) and send it as a response
 
       const { accessToken, refreshToken } = await authenticateUser(user);
-      window.location.href("http://localhost:3000/home");
       res.send({ accessToken, refreshToken });
     } else {
       // 4. If credentials are not ok --> throw an error (401)
