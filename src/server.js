@@ -18,6 +18,19 @@ passport.use("google", googleStrategy);
 const server = express();
 const port = process.env.PORT || 3001;
 
+let whitelist = ["http://localhost:3000"];
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
 server.use(cors());
 server.use(express.json());
 server.use(passport.initialize());
