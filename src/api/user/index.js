@@ -21,7 +21,7 @@ const userRouter = express.Router();
 //for google authorization
 userRouter.get(
   "/googleLogin",
-  passport.authenticate("google", { scope: ["user", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 ); // the purpose of this endpoint is to redirect users to Google Consent Screen
 userRouter.get(
   "/googleRedirect",
