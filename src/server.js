@@ -18,7 +18,10 @@ passport.use("google", googleStrategy);
 const server = express();
 const port = process.env.PORT || 3001;
 
-let whitelist = ["http://localhost:3000"];
+let whitelist = [
+  "http://localhost:3000",
+  "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=https%3A%2F%2Fsolo-capstone.herokuapp.com%2Fuser%2FgoogleRedirect&scope=profile%20email&client_id=699957671428-fsntp9p1f52dc831iduap2bp0p1nkg14.apps.googleusercontent.com",
+];
 
 var corsOptions = {
   origin: function (origin, callback) {
