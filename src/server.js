@@ -46,7 +46,7 @@ console.log(whitelist);
 //   },
 // };
 
-// server.use(cors(corsOptions));
+server.use(cors(whitelist[0]));
 server.use(express.json());
 server.use(passport.initialize());
 
