@@ -188,6 +188,7 @@ userRouter.post("/login", async (req, res, next) => {
   try {
     // 1. Obtain credentials from req.body
     const { email, password } = req.body;
+    console.log(req.body);
 
     // 2. Verify credentials
     const user = await UserSchema.checkCredentials(email, password);
