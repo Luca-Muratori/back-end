@@ -18,6 +18,11 @@ passport.use("google", googleStrategy);
 const server = express();
 const port = process.env.PORT || 3001;
 
+server.all("/", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 let whitelist = [
   "http://localhost:3000",
   "https://solo-capstone.herokuapp.com/user/login",
@@ -25,12 +30,6 @@ let whitelist = [
   "https://solo-capstone.herokuapp.com/user/googleRedirect",
   "https://solo-capstone.herokuapp.com",
 ];
-
-server.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
 
 var corsOptions = {
   origin: function (origin, callback) {
