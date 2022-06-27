@@ -199,6 +199,7 @@ userRouter.post("/login", async (req, res, next) => {
 
       const { accessToken, refreshToken } = await authenticateUser(user);
       res.send({ accessToken, refreshToken });
+      window.location.href("http://localhost:3000/home");
     } else {
       // 4. If credentials are not ok --> throw an error (401)
       next(createError(401, "Credentials are not ok!"));
