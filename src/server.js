@@ -25,10 +25,10 @@ server.all("/", function (req, res, next) {
 });
 let whitelist = [
   "http://localhost:3000",
-  "https://solo-capstone.herokuapp.com/user/login",
-  "https://solo-capstone.herokuapp.com/user/googleLogin",
-  "https://solo-capstone.herokuapp.com/user/googleRedirect",
-  "https://solo-capstone.herokuapp.com",
+  // "https://solo-capstone.herokuapp.com/user/login",
+  // "https://solo-capstone.herokuapp.com/user/googleLogin",
+  // "https://solo-capstone.herokuapp.com/user/googleRedirect",
+  // "https://solo-capstone.herokuapp.com",
 ];
 
 var corsOptions = {
