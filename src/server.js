@@ -27,7 +27,6 @@ let whitelist = [
 var corsOptions = {
   origin: function (origin, callback) {
     if (!origin || whitelist.indexOf(origin) !== -1) {
-      'Access-Control-Allow-Origin': '*',
       callback(null, true);
     } else {
       console.log(origin);
