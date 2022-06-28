@@ -41,7 +41,7 @@ var corsOptions = {
   },
 };
 
-server.use(cors(corsOptions));
+server.use(cors({ origin: "*" }));
 server.use(express.json());
 server.use(passport.initialize());
 
