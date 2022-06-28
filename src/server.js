@@ -30,6 +30,7 @@ console.log(whitelist);
 
 var corsOptions = {
   origin: function (origin, callback) {
+    console.log("cors");
     if (whitelist.some((allowedUrl) => allowedUrl === origin)) {
       callback(null, true);
     } else {
@@ -38,7 +39,7 @@ var corsOptions = {
   },
 };
 
-server.use(cors());
+server.use(cors(corsOptions));
 server.use(express.json());
 server.use(passport.initialize());
 
