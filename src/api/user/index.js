@@ -32,7 +32,7 @@ userRouter.get(
       const { accessToken, refreshToken } = req.user;
 
       res.redirect(
-        `${process.env.FE_URL}/users?accessToken=${accessToken}&refreshToken=${refreshToken}`
+        `${process.env.FE_URL}/user?accessToken=${accessToken}&refreshToken=${refreshToken}`
       );
     } catch (error) {
       next(error);
