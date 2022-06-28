@@ -29,19 +29,15 @@ console.log(whitelist);
 
 var corsOptions = {
   origin: function (origin, callback) {
-    console.log("origin", origin);
     if (whitelist.some((allowedUrl) => allowedUrl === origin)) {
-      console.log(whitelist.indexOf(origin));
-      console.log("good", origin);
       callback(null, true);
     } else {
-      console.log("error", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
 };
 
-server.use(cors({ origin: "*" }));
+server.use(cors(corsOptions));
 server.use(express.json());
 server.use(passport.initialize());
 
