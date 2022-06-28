@@ -17,6 +17,7 @@ passport.use("google", googleStrategy);
 
 const server = express();
 const port = process.env.PORT || 3001;
+console.log(port);
 
 // server.all("/", function (req, res, next) {
 //   console.log("access");

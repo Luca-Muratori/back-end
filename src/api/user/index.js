@@ -101,8 +101,8 @@ userRouter.put(
 //for getting all the user
 userRouter.get("/", async (req, res, next) => {
   try {
+    console.log("hello");
     const users = await UserSchema.find().populate("photos");
-    users.map((user) => console.log(user.photos));
     res.status(200).send(users);
   } catch (error) {
     console.log(error);
