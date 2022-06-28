@@ -33,21 +33,21 @@ let whitelist = [
 ];
 console.log(whitelist);
 
-// var corsOptions = {
-//   origin: function (origin, callback) {
-//     console.log("origin", origin);
-//     if (!origin || whitelist.indexOf(origin) !== -1) {
-//       console.log(whitelist.indexOf(origin));
-//       console.log(origin);
-//       callback(null, true);
-//     } else {
-//       console.log(origin);
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-// };
+var corsOptions = {
+  origin: function (origin, callback) {
+    console.log("origin", origin);
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      console.log(whitelist.indexOf(origin));
+      console.log(origin);
+      callback(null, true);
+    } else {
+      console.log(origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 
-server.use(cors(whitelist[0]));
+server.use(cors(corsOptions));
 server.use(express.json());
 server.use(passport.initialize());
 
