@@ -31,7 +31,7 @@ userRouter.get(
     try {
       const { accessToken, refreshToken } = req.user;
       res.redirect(
-        `${process.env.FE_URL}/user/home?accessToken=${accessToken}&refreshToken=${refreshToken}`
+        `${process.env.FE_URL}/home?accessToken=${accessToken}&refreshToken=${refreshToken}`
       );
     } catch (error) {
       next(error);
