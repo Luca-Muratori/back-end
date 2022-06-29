@@ -30,8 +30,9 @@ userRouter.get(
     // the purpose of this endpoint is to receive a response from Google, execute the google callback function and then send a response back
     try {
       const { accessToken, refreshToken } = req.user;
+      res.send({ accessToken, refreshToken });
       res.redirect(
-        `${process.env.FE_URL}/user?accessToken=${accessToken}&refreshToken=${refreshToken}`
+        `${process.env.FE_URL}/user/home?accessToken=${accessToken}&refreshToken=${refreshToken}`
       );
     } catch (error) {
       next(error);
