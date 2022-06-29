@@ -112,6 +112,7 @@ userRouter.get("/", async (req, res, next) => {
 //for gettin only the user that had login
 userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
+    console.log("user/me");
     const user = await UserSchema.findById(req.user._id);
     res.send(user);
   } catch (error) {
