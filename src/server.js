@@ -11,6 +11,7 @@ import {
 } from "./errorsHandler.js";
 import userRouter from "./api/user/index.js";
 import placeRouter from "./api/place/index.js";
+import photoRouter from "./api/photo/index.js";
 import "./api/comment/model.js";
 
 passport.use("google", googleStrategy);
@@ -56,6 +57,7 @@ mongoose.connection.on("connected", () => {
 ///--------------------endpoints
 server.use("/user", userRouter);
 server.use("/place", placeRouter);
+server.use("/photo", photoRouter);
 
 ///----------------------errors handlers --------------------------------
 server.use(unauthorizedHandler);
