@@ -12,6 +12,7 @@ import {
 import userRouter from "./api/user/index.js";
 import placeRouter from "./api/place/index.js";
 import photoRouter from "./api/photo/index.js";
+import toDoRouter from "./api/toDo/index.js";
 import "./api/comment/model.js";
 
 passport.use("google", googleStrategy);
@@ -58,6 +59,7 @@ mongoose.connection.on("connected", () => {
 server.use("/user", userRouter);
 server.use("/place", placeRouter);
 server.use("/photo", photoRouter);
+server.use("/toDos", toDoRouter);
 
 ///----------------------errors handlers --------------------------------
 server.use(unauthorizedHandler);
