@@ -113,7 +113,9 @@ userRouter.get("/", async (req, res, next) => {
 userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
     console.log("user/me");
-    const user = await UserSchema.findById(req.user._id);
+    const user = await UserSchema.findById(req.user._id).populate(
+      "userToDoList"
+    );
     res.send(user);
   } catch (error) {
     next(error);
