@@ -226,6 +226,7 @@ userRouter.post("/refreshTokens", async (req, res, next) => {
 userRouter.post("/:userId/toDos", async (req, res, next) => {
   try {
     const user = await UserSchema.find({ _id: req.params.userId });
+    console.log("user", user);
     if (user) {
       const toDoToInsert = await ToDoSchema({
         ...req.body,
