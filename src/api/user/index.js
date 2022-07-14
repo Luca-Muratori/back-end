@@ -231,7 +231,7 @@ userRouter.post("/:userId/toDos", async (req, res, next) => {
         ...req.body,
         userId: req.params.userId,
       }).save();
-      console.log(toDoToInsert);
+      console.log("12", toDoToInsert);
 
       const modifiedUser = await UserSchema.findOneAndUpdate(
         { _id: req.params.userId },
